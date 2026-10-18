@@ -1,0 +1,10 @@
+ai-demo-apps
+
+The applications under apps/ are copied from the examples/ directory of
+https://github.com/splunk/splunk-ao-python (commit 59cd6b450b6a78ccbe12de82f660107500bbc956),
+which is licensed under the Apache License, Version 2.0 (see LICENSE, copied unchanged from
+that repository). Changes made here: each app's dependency on the Splunk AO SDK points at the
+published PyPI package `splunk-ao[<extra>]` instead of a local source checkout, and each app
+README gained a "Splunk AO setup" section. No SDK source (splunk-ao-python src/) is included.
+
+The knowledge/ pages, km-open.json, km-chats/ and script/ are original to this repository.

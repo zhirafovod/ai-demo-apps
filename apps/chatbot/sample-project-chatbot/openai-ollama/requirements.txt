@@ -1,0 +1,3 @@
+splunk-ao[openai]
+python-dotenv>=1.2.2
+pytest

@@ -1,0 +1,5 @@
+splunk-ao[langchain]
+langgraph
+langsmith
+langchain[openai]
+grandalf

@@ -1,0 +1,22 @@
+[project]
+name = "langgraph-traceloop"
+version = "0.1.0"
+description = "LangGraph + Traceloop (OpenLLMetry) + Splunk AO Integration"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.14.1,<4",
+    "langgraph>=0.6.0",
+    "langgraph-prebuilt>=0.6.0",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "openai",
+    "python-dotenv>=1.2.2",
+    "traceloop-sdk>=0.30.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+]
+

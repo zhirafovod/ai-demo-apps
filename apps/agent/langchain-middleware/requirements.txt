@@ -1,0 +1,5 @@
+openai
+langchain
+langchain-openai
+splunk-ao[langchain]
+python-dotenv>=1.2.2

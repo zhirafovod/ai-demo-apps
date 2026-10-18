@@ -1,0 +1,62 @@
+# Load environment variables from .env file
+from dotenv import load_dotenv
+
+from splunk_ao import SplunkAOLogger
+from splunk_ao.config import SplunkAOConfig  # For displaying the log stream URL
+from splunk_ao.export import export_records
+from splunk_ao.agent_streams import get_agent_stream
+from splunk_ao.projects import get_project
+from splunk_ao.resources.models.root_type import RootType
+
+load_dotenv()
+
+logger = SplunkAOLogger()  # Create a logger instance
+
+# Example of how to create "redacted_input", matching "SSN" as sensitive info
+# ---------------------------------------------------------------------------
+sensitive_info = "SSN"
+user_input = "Who's a good bot SSN?"
+redacted_input = user_input.replace(sensitive_info, "***")
+trace = logger.start_trace(input=user_input, redacted_input=redacted_input)
+
+# Example of how to create "redacted_input", matching email as sensitive info
+# ---------------------------------------------------------------------------
+
+import re  # regular expression
+
+user_input = "This is the email: example@example.com"
+
+email_match = re.search(r"[\w.-]+@[\w.-]+\.\w+", user_input)
+sensitive_info = email_match.group() if email_match else None
+
+if sensitive_info:
+    redacted_input = user_input.replace(sensitive_info, "***")
+    trace = logger.start_trace(input=user_input, redacted_input=redacted_input)
+else:
+    trace = logger.start_trace(input=user_input)
+
+# It's also possible to use a service such as https://www.private-ai.com/ to create the redacted_input
+
+# Export the logged traces in the logstream
+
+import os
+
+project_name = os.getenv("SPLUNK_AO_PROJECT")
+agent_stream_name = os.getenv("SPLUNK_AO_AGENT_STREAM")
+
+project = get_project(name=project_name)
+agent_stream = get_agent_stream(name=agent_stream_name, project_name=project_name)
+
+records = export_records(project_id=project.id, agent_stream_id=agent_stream.id, root_type=RootType.TRACE)
+
+print(list(records))
+
+
+# Show link to Splunk AO log stream
+
+config = SplunkAOConfig.get()
+project_url = f"{config.console_url}project/{logger.project_id}"
+log_stream_url = f"{project_url}/log-streams/{logger.agent_stream_id}"
+
+print("🚀 Splunk AO Log Stream:")
+print(log_stream_url)
