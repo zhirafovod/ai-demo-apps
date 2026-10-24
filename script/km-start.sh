@@ -65,6 +65,10 @@ if [ ! -f "$CLI" ]; then
   bash "$KM_HOME/scripts/install-km-desktop.sh" --daemon || die "building KM in $KM_HOME failed"
   [ -f "$CLI" ] || die "build finished but there is still no daemon at $CLI"
 fi
+# Physical path: cli.js runs only when argv[1] is its real path, so a symlinked KM_HOME
+# (/tmp on macOS) would exit 0 without starting.
+KM_HOME="$(cd "$KM_HOME" && pwd -P)"
+CLI="$KM_HOME/packages/daemon/dist/cli.js"
 
 reserved() { [ "$1" = 4700 ] || [ "$1" = 4173 ]; }
 listening() { (exec 3<>"/dev/tcp/127.0.0.1/$1") 2>/dev/null; }
@@ -151,7 +155,7 @@ pick_implementer() {
     return
   fi
   # "id<TAB>label<TAB>first model", one line per agent CLI found on this machine.
-  rows="$(api GET /agents | jget '(Array.isArray(j) ? j : []).filter(a => a.available && !String(a.id).startsWith("mock")).map(a => [a.id, a.label, (a.models || [])[0] || "default"].join("\t")).join("\n")')" || rows=""
+  rows="$(api GET /agents | jget '((j && j.agents) || []).filter(a => a.available && !String(a.id).startsWith("mock")).map(a => [a.id, a.label, (a.models || [])[0] || "default"].join("\t")).join("\n")')" || rows=""
   local ids=() labels=() models=()
   while IFS=$'\t' read -r id label model; do
     [ -n "$id" ] || continue
@@ -227,7 +231,7 @@ offer_github() {
   if [ "$(printf '%s' "$out" | jget 'j && j.ok === true')" = true ]; then
     echo "GitHub issues: connected $(printf '%s' "$out" | jget 'j.repo') as $(printf '%s' "$out" | jget 'j.login') ($(printf '%s' "$out" | jget 'j.count') issues on the board)"
   else
-    echo "GitHub issues: not connected: $(printf '%s' "$out" | jget 'j && j.error || "no answer"'). KM keeps running." >&2
+    echo "GitHub issues: not connected ($(printf '%s' "$out" | jget 'j && j.error || "no answer"')); KM keeps running." >&2
   fi
 }
 
