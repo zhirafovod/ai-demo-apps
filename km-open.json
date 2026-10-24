@@ -1,5 +1,5 @@
 {
   "readme": "README.md",
-  "knowledge": ["knowledge/instrumentation/ao.md"],
+  "knowledge": ["knowledge/how-to-use.md", "knowledge/instrumentation/ao.md"],
   "board": true
 }

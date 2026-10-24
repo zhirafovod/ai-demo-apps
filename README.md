@@ -66,16 +66,21 @@ o11y Cloud (`SPLUNK_AO_REALM`, `SPLUNK_AO_O11Y_TOKEN`) variables. Keep real valu
 
 ## Open in KM
 
-`./script/km-start.sh` starts [knowledge-management](https://github.com/unpolarize/knowledge-management)
-with this repo as the knowledge root. It needs a KM checkout with a built daemon:
+One step installs (when missing), starts and bootstraps
+[knowledge-management](https://github.com/unpolarize/knowledge-management) with this repo as the
+knowledge root:
 
 ```shell
-KM_HOME=~/path/to/knowledge-management ./script/km-start.sh
+./script/km-start.sh
 ```
 
-It picks a free port in 4790–4799, uses `<repo>/planning` as an empty board (created on first run,
-git-ignored), passes `--no-config` and leaves fleet off. [`km-open.json`](km-open.json) opens this
-README, [the AO page](knowledge/instrumentation/ao.md) and the board.
+It builds KM into `KM_HOME` (default `~/.km/knowledge-management`) if there is no built daemon,
+starts it on a free port in 4790–4799 (`--no-config`, fleet off, `<repo>/planning` as a git-ignored
+board), opens your browser on it, asks which local agent CLI (Claude Code, Grok, Codex) the
+implementer uses, and offers to connect this repo's GitHub issues. The token stays in
+`~/.config/km/github/ai-demo-apps/`, never in the repo. [`km-open.json`](km-open.json) opens this
+README, [How to use](knowledge/how-to-use.md), [the AO page](knowledge/instrumentation/ao.md) and
+the board. Details and settings: [How to use this repo in KM](knowledge/how-to-use.md).
 
 - [[chat:build-app|Build a new app]] — in KM, opens a chat with the prompt from
   [`km-chats/build-app.md`](km-chats/build-app.md) (scaffold another demo app here, separate from
